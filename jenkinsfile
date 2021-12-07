@@ -1,0 +1,12 @@
+node('jdk11-mvn3.8.4') {
+    stage('git') {
+        git 'https://github.com/ramesh-devo/java11-examples.git'
+    }
+    stage('build') {
+        sh 'mvn clean package'
+    }
+    stage('archive'){
+        archive 'target/*.jar'
+    }
+
+}
