@@ -1,4 +1,5 @@
 node('jdk11-mvn3.8.4') {
+    try{
     properties([pipelineTriggers([cron('0 */3 * * 0,6')])])
     stage('git') {
         git 'https://github.com/ramesh-devo/java11-examples.git'
@@ -15,6 +16,16 @@ node('jdk11-mvn3.8.4') {
     }
     stage('publish test reports'){
         junit '**/TEST-*.xml'
+    }
+    currentBuild.result = 'SUCCESS'
+    }
+    catch (err) {
+        currentBuild.result = 'FAILURE'
+    }
+    finally {
+        mail to: 'qtdevops@gmail.com',
+        subject: "Status of the pipeline: ${currentBuild.fullDisplayName}",
+        body: "${env.BUILD_URL} has result ${currentBuild.result}" 
     }
 
 }
